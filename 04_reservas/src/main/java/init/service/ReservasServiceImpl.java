@@ -14,7 +14,7 @@ import init.utilidades.Mapeador;
 @Service
 public class ReservasServiceImpl implements ReservasService {
 	
-	String url="http://localhost:9500/vuelos/";
+	String url="http://servicio-vuelos/vuelos/";
 	RestClient restClient;
 	ReservasDao reservasDao;
 	Mapeador mapeador;
@@ -27,17 +27,14 @@ public class ReservasServiceImpl implements ReservasService {
 
 	@Override
 	public boolean altaReserva(ReservaDto reserva, int plazasReserva) {
-		System.out.println(plazasReserva);
+		System.out.println(reserva.getVueloDto().getPrecio());
 		if(reservasDao.findById(reserva.getIdreserva())!=null) {
 			Reserva reserva2 = mapeador.reservaDtoToEntity(reserva);
-			System.out.println(reserva2.getHotel().getIdHotel());
+			reserva2.setPrecio(plazasReserva*reserva2.getVuelo().getPrecio());
 			reservasDao.save(reserva2);
-			System.out.println("despues de grabar");
-			System.out.println(reserva2.getVuelo().getPlazas());
 			actualizarPlazas(plazasReserva,reserva2.getVuelo().getIdvuelo());
 			return true;
 		}else {
-			System.err.println("false");
 			return false;
 		}
 	}
@@ -50,9 +47,6 @@ public class ReservasServiceImpl implements ReservasService {
 	}
 	
 	public void actualizarPlazas (int plazasReservadas, int idVuelo) {
-		System.out.println("Id de vuelo"+idVuelo);
-		System.out.println("plazas"+plazasReservadas);
-		System.out.println(url+"actualizar/"+idVuelo+"/"+plazasReservadas);
 		restClient
 		.put()
 		.uri(url+"actualizar/"+idVuelo+"/"+plazasReservadas)
