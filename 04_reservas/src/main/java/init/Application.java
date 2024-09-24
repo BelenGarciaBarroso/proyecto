@@ -20,6 +20,8 @@ public class Application {
 	@Bean
 	public RestClient getRestClient() {
 		return RestClient.create();
+		
+		
 	}
 
 }
